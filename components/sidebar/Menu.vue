@@ -2,12 +2,11 @@
 import type SidebarMenu from '~/types/sidebar-menu'
 
 const items = ref<SidebarMenu[]>([
-  { title: 'Записи', link: '/cabinet/records', icon: 'vaadin:records' },
-  { title: 'Продажи', link: '/cabinet/sales', icon: 'carbon:sales-ops' },
-  { title: 'Финансы', link: '/cabinet/finance', icon: 'material-symbols:finance-mode-rounded' },
-  { title: 'Склад', link: '/cabinet/warehouse', icon: 'prime:warehouse' },
-  { title: 'Клиенты', link: '/cabinet/clients', icon: 'weui:contacts-outlined' },
-  { title: 'Аналитика', link: '/cabinet/analytics', icon: 'clarity:analytics-line' }
+  { title: 'Записи', link: '/cabinet/records', icon: 'pi pi-database' },
+  { title: 'Финансы', link: '/cabinet/finance', icon: 'pi pi-wallet' },
+  { title: 'Склад', link: '/cabinet/warehouse', icon: 'pi pi-warehouse' },
+  { title: 'Клиенты', link: '/cabinet/clients', icon: 'pi pi-users' },
+  { title: 'Аналитика', link: '/cabinet/analytics', icon: 'pi pi-chart-bar' }
 ])
 defineEmits([
   'close'
@@ -28,12 +27,10 @@ defineEmits([
             v-for="item in items"
             :key="item.title"
             :to="item.link"
-            class="flex items-center
-          gap-2 px-2 py-1 transition
-          rounded cursor-pointer hover:bg-zinc-700"
+            class="flex items-center gap-2 px-2 py-1 transition rounded cursor-pointer hover:bg-zinc-700"
             @click="$emit('close')"
         >
-<!--          <Icon size="20" :name="item.icon" color="white" class="text-zinc-400" />-->
+          <i :class="[item.icon, 'text-zinc-400']" style="font-size: 1.25rem" />
           <span class="text-zinc-400">{{ item.title }}</span>
         </nuxt-link>
       </div>

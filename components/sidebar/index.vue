@@ -9,19 +9,9 @@ const open = ref(false)
       <span class="md:text-2xl">
         Клиника <span class="text-blue-700">Доверие</span>
       </span>
-<!--      <Icon-->
-<!--          class="z-50 cursor-pointer left-2 top-2"-->
-<!--          size="30"-->
-<!--          name="iconamoon:menu-burger-horizontal"-->
-<!--          @click="open = true"-->
-<!--      />-->
+      <i class="pi pi-bars z-50 cursor-pointer left-2 top-2" @click="open = true"/>
       <div v-if="open" class="fixed top-0 left-0 z-50 w-full h-full bg-zinc-800">
-<!--        <Icon-->
-<!--            class="absolute z-50 cursor-pointer right-4 top-4"-->
-<!--            size="30"-->
-<!--            name="material-symbols:close"-->
-<!--            @click="open = false"-->
-<!--        />-->
+        <i class="pi pi-times absolute z-50 cursor-pointer right-4 top-4 text-white" @click="open = false"/>
         <SidebarMenu @close="open = false" />
       </div>
     </div>
