@@ -1,14 +1,13 @@
 // @ts-check
-import withNuxt from './.nuxt/eslint.config.mjs'
+import withNuxt from './.nuxt/eslint.config.mjs';
 
 export default withNuxt(
-  // Your custom configs here
-
+	// Your custom configs здесь
 )
-    .override('nuxt/typescript', {
-        rules: {
-            '@typescript-eslint/ban-types': 'off',
-            'indent': ['error', 2], // Правило для отступов (2 пробела)
-            'vue/html-indent': ['error', 2], // Для Vue-шаблонов (2 пробела)
-        }
-    })
+	.override('nuxt/typescript/rules', { // <-- Исправлено название
+		rules: {
+			'@typescript-eslint/ban-types': 'off',
+			'vue/ no-multiple-template-root': 'off',
+			'vue/html-indent': ['error', 2], // Устанавливает отступы в Vue-шаблонах
+		},
+	});
