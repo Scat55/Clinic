@@ -7,7 +7,8 @@ export default withNuxt(
 )
     .override('nuxt/typescript', {
         rules: {
-            // ...Override rules, for example:
-            '@typescript-eslint/ban-types': 'off'
+            '@typescript-eslint/ban-types': 'off',
+            'indent': ['error', 2], // Правило для отступов (2 пробела)
+            'vue/html-indent': ['error', 2], // Для Vue-шаблонов (2 пробела)
         }
     })
