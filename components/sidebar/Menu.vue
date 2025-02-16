@@ -17,10 +17,10 @@ defineEmits(['close']);
 			<!--      <Logo class="text-blue-700" /> -->
 			<nuxt-link
 				to="/cabinet"
-				class="font-bold lg:text-xl text-zinc-400"
+				class="lg:text-xl"
 				@click="$emit('close')"
 			>
-				Клиника Доверие
+				Клиника <span class="text-blue-700">Доверие</span>
 			</nuxt-link>
 		</header>
 		<div class="px-4 grow">
@@ -29,14 +29,14 @@ defineEmits(['close']);
 					v-for="item in items"
 					:key="item.title"
 					:to="item.link"
-					class="flex items-center gap-2 px-2 py-1 transition rounded cursor-pointer hover:bg-zinc-700"
+					class="flex items-center gap-2 px-2 py-1 transition rounded cursor-pointer hover:bg-zinc-100"
 					@click="$emit('close')"
 				>
 					<i
-						:class="[item.icon, 'text-zinc-400']"
+						:class="item.icon"
 						style="font-size: 1.25rem"
 					/>
-					<span class="text-zinc-400">{{ item.title }}</span>
+					<span>{{ item.title }}</span>
 				</nuxt-link>
 			</div>
 		</div>
