@@ -5,7 +5,7 @@ const items = ref<SidebarMenu[]>([
 	{ title: 'Записи', link: '/cabinet/records', icon: 'pi pi-database' },
 	{ title: 'Финансы', link: '/cabinet/finance', icon: 'pi pi-wallet' },
 	{ title: 'Склад', link: '/cabinet/warehouse', icon: 'pi pi-warehouse' },
-	{ title: 'Клиенты', link: '/cabinet/clients', icon: 'pi pi-users' },
+	{ title: 'Пациенты', link: '/cabinet/clients', icon: 'pi pi-users' },
 	{ title: 'Аналитика', link: '/cabinet/analytics', icon: 'pi pi-chart-bar' },
 ]);
 defineEmits(['close']);
