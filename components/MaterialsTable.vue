@@ -3,16 +3,21 @@
 		<h1 class="text-2xl font-bold mb-6">
 			Склад расходных материалов
 		</h1>
-
-		<IconField>
-			<InputIcon class="pi pi-search" />
+		<div class="flex justify-between items-center mb-6">
 			<InputText
 				v-model="searchQuery"
 				placeholder="Поиск по материалам"
-				class="w-full"
+				class="w-full p-2 border rounded-lg mr-4"
 			/>
-		</IconField>
-		<Card class="mt-6">
+			<Button
+				icon="pi pi-plus"
+				class="p-button-success"
+				size="small"
+				@click="openAddModal"
+			/>
+		</div>
+
+		<Card>
 			<template #content>
 				<DataTable
 					:value="filteredMaterials"
@@ -23,36 +28,175 @@
 					<Column
 						field="name"
 						header="Название материала"
+						class="text-sm"
 					/>
 					<Column
 						field="quantity"
 						header="Количество"
+						class="text-sm"
 					/>
 					<Column
 						field="unit"
 						header="Единица измерения"
+						class="text-sm"
 					/>
 					<Column
 						field="lastDelivery"
 						header="Дата последней поставки"
+						class="text-sm"
 					/>
 					<Column
 						field="supplier"
 						header="Поставщик"
+						class="text-sm"
 					/>
+					<Column header="Действия">
+						<template #body="slotProps">
+							<div class="flex">
+								<Button
+									icon="pi pi-pencil"
+									class="p-button-rounded p-button-text p-button-primary mr-2"
+									@click="openEditModal(slotProps.data)"
+								/>
+								<Button
+									icon="pi pi-trash"
+									class="p-button-rounded p-button-text p-button-danger"
+									@click="confirmDelete(slotProps.data)"
+								/>
+							</div>
+						</template>
+					</Column>
 				</DataTable>
 			</template>
 		</Card>
+
+		<!-- Модальное окно для добавления материала -->
+		<Dialog
+			v-model:visible="displayAddModal"
+			modal
+			header="Добавить материал"
+			:style="{ width: '50vw' }"
+		>
+			<div class="space-y-4">
+				<InputText
+					v-model="newMaterial.name"
+					placeholder="Название материала"
+					class="w-full"
+				/>
+				<InputNumber
+					v-model="newMaterial.quantity"
+					placeholder="Количество"
+					class="w-full"
+					:min="0"
+				/>
+				<InputText
+					v-model="newMaterial.unit"
+					placeholder="Единица измерения"
+					class="w-full"
+				/>
+				<Calendar
+					v-model="newMaterial.lastDelivery"
+					placeholder="Дата последней поставки"
+					date-format="dd.mm.yy"
+					class="w-full"
+				/>
+				<InputText
+					v-model="newMaterial.supplier"
+					placeholder="Поставщик"
+					class="w-full"
+				/>
+			</div>
+			<template #footer>
+				<Button
+					label="Отмена"
+					icon="pi pi-times"
+					class="p-button-text"
+					severity="danger"
+					size="small"
+					@click="closeAddModal"
+				/>
+				<Button
+					label="Сохранить"
+					icon="pi pi-check"
+					class="p-button-success"
+					size="small"
+					@click="saveMaterial"
+				/>
+			</template>
+		</Dialog>
+
+		<!-- Модальное окно для редактирования материала -->
+		<Dialog
+			v-model:visible="displayEditModal"
+			modal
+			header="Редактировать материал"
+			:style="{ width: '50vw' }"
+		>
+			<div class="space-y-4">
+				<InputText
+					v-model="selectedMaterial.name"
+					placeholder="Название материала"
+					class="w-full"
+				/>
+				<InputNumber
+					v-model="selectedMaterial.quantity"
+					placeholder="Количество"
+					class="w-full"
+					:min="0"
+				/>
+				<InputText
+					v-model="selectedMaterial.unit"
+					placeholder="Единица измерения"
+					class="w-full"
+				/>
+				<Calendar
+					v-model="selectedMaterial.lastDelivery"
+					placeholder="Дата последней поставки"
+					date-format="dd.mm.yy"
+					class="w-full"
+				/>
+				<InputText
+					v-model="selectedMaterial.supplier"
+					placeholder="Поставщик"
+					class="w-full"
+				/>
+			</div>
+			<template #footer>
+				<Button
+					label="Отмена"
+					icon="pi pi-times"
+					class="p-button-text"
+					@click="closeEditModal"
+				/>
+				<Button
+					label="Сохранить"
+					icon="pi pi-check"
+					class="p-button-success"
+					@click="updateMaterial"
+				/>
+			</template>
+		</Dialog>
+
+		<!-- Диалог подтверждения удаления -->
+		<ConfirmDialog />
 	</div>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue';
+import { useConfirm } from 'primevue/useconfirm';
 import InputText from 'primevue/inputtext';
+import InputNumber from 'primevue/inputnumber';
+import Calendar from 'primevue/calendar';
+import Button from 'primevue/button';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
+import Dialog from 'primevue/dialog';
+import ConfirmDialog from 'primevue/confirmdialog';
 
-// TODO: Вынести в отдельный сервис
+// Инициализация useConfirm
+const confirm = useConfirm();
+
 const materials = ref([
 	{
 		id: 1,
@@ -217,11 +361,77 @@ const materials = ref([
 ]);
 
 const searchQuery = ref('');
+const displayAddModal = ref(false);
+const displayEditModal = ref(false);
+const newMaterial = ref({
+	name: '',
+	quantity: 0,
+	unit: '',
+	lastDelivery: '',
+	supplier: '',
+});
+const selectedMaterial = ref({});
 
+// Фильтрация материалов
 const filteredMaterials = computed(() => {
 	if (!searchQuery.value) return materials.value;
 	return materials.value.filter(material =>
 		material.name.toLowerCase().includes(searchQuery.value.toLowerCase()),
 	);
 });
+
+// Открыть модальное окно добавления
+const openAddModal = () => {
+	newMaterial.value = { name: '', quantity: 0, unit: '', lastDelivery: '', supplier: '' };
+	displayAddModal.value = true;
+};
+
+// Закрыть модальное окно добавления
+const closeAddModal = () => {
+	displayAddModal.value = false;
+};
+
+// Сохранить новый материал
+const saveMaterial = () => {
+	materials.value.push({
+		id: materials.value.length + 1,
+		...newMaterial.value,
+	});
+	closeAddModal();
+};
+
+// Открыть модальное окно редактирования
+const openEditModal = (material) => {
+	selectedMaterial.value = { ...material };
+	displayEditModal.value = true;
+};
+
+// Закрыть модальное окно редактирования
+const closeEditModal = () => {
+	displayEditModal.value = false;
+};
+
+// Обновить материал
+const updateMaterial = () => {
+	const index = materials.value.findIndex(m => m.id === selectedMaterial.value.id);
+	if (index !== -1) {
+		materials.value[index] = { ...selectedMaterial.value };
+	}
+	closeEditModal();
+};
+
+// Подтверждение удаления
+const confirmDelete = (material) => {
+	confirm.require({
+		message: 'Вы уверены, что хотите удалить этот материал?',
+		header: 'Подтверждение удаления',
+		icon: 'pi pi-exclamation-triangle',
+		accept: () => deleteMaterial(material),
+	});
+};
+
+// Удалить материал
+const deleteMaterial = (material) => {
+	materials.value = materials.value.filter(m => m.id !== material.id);
+};
 </script>
