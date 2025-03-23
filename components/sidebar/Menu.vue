@@ -3,10 +3,9 @@ import type SidebarMenu from '~/types/sidebar-menu';
 
 const items = ref<SidebarMenu[]>([
 	{ title: 'Записи', link: '/cabinet/records', icon: 'pi pi-database' },
+	{ title: 'Пациенты', link: '/cabinet/clients', icon: 'pi pi-users' },
 	{ title: 'Финансы', link: '/cabinet/finance', icon: 'pi pi-wallet' },
 	{ title: 'Склад', link: '/cabinet/warehouse', icon: 'pi pi-warehouse' },
-	{ title: 'Пациенты', link: '/cabinet/clients', icon: 'pi pi-users' },
-	{ title: 'Аналитика', link: '/cabinet/analytics', icon: 'pi pi-chart-bar' },
 ]);
 defineEmits(['close']);
 </script>
