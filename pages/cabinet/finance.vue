@@ -1,5 +1,5 @@
 <template>
-	<div class="p-8">
+	<div>
 		<h1 class="text-2xl font-bold mb-6">
 			Финансы
 		</h1>
@@ -23,10 +23,11 @@
 					option-label="label"
 					option-value="value"
 					placeholder="Тип операции"
-					class="w-48"
+					size="small"
 				/>
 				<InputText
 					v-model="searchQuery"
+					size="small"
 					placeholder="Поиск по описанию"
 					class="w-64 p-2 border rounded-lg"
 				/>
@@ -34,6 +35,7 @@
 			<Button
 				label="Добавить операцию"
 				icon="pi pi-plus"
+				size="small"
 				class="p-button-success"
 				@click="openAddModal"
 			/>
@@ -43,15 +45,15 @@
 		<DataTable
 			:value="filteredOperations"
 			:paginator="true"
-			:rows="10"
+			:rows="5"
 			paginator-template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-			:rows-per-page-options="[5, 10, 20]"
 			current-page-report-template="Показано {first} - {last} из {totalRecords}"
 			striped-rows
 		>
 			<Column
 				field="date"
 				header="Дата"
+				class="text-sm"
 			>
 				<template #body="slotProps">
 					{{ formatDate(slotProps.data.date) }}
@@ -60,6 +62,7 @@
 			<Column
 				field="type"
 				header="Тип операции"
+				class="text-sm"
 			>
 				<template #body="slotProps">
 					<Tag
@@ -71,6 +74,7 @@
 			<Column
 				field="amount"
 				header="Сумма"
+				class="text-sm"
 			>
 				<template #body="slotProps">
 					{{ slotProps.data.amount.toLocaleString() }} ₽
@@ -79,10 +83,12 @@
 			<Column
 				field="category"
 				header="Категория"
+				class="text-sm"
 			/>
 			<Column
 				field="description"
 				header="Описание"
+				class="text-sm"
 			/>
 			<Column header="Действия">
 				<template #body="slotProps">
@@ -110,41 +116,50 @@
 					option-value="value"
 					placeholder="Тип операции"
 					class="w-full"
+					size="small"
 				/>
 				<Calendar
 					v-model="newOperation.date"
 					placeholder="Дата операции"
 					date-format="dd.mm.yy"
 					class="w-full"
+					size="small"
 				/>
 				<InputNumber
 					v-model="newOperation.amount"
 					placeholder="Сумма"
 					class="w-full"
 					:min="0"
+					size="small"
 				/>
 				<InputText
 					v-model="newOperation.category"
 					placeholder="Категория"
 					class="w-full"
+					size="small"
 				/>
 				<InputText
 					v-model="newOperation.description"
 					placeholder="Описание"
 					class="w-full"
+					size="small"
 				/>
 			</div>
 			<template #footer>
 				<Button
 					label="Отмена"
+					size="small"
 					icon="pi pi-times"
+					severity="danger"
 					class="p-button-text"
 					@click="closeAddModal"
 				/>
 				<Button
 					label="Сохранить"
+					size="small"
 					icon="pi pi-check"
 					class="p-button-success"
+					:disabled="newOperation.type === '' && newOperation.date === ''"
 					@click="saveOperation"
 				/>
 			</template>
@@ -218,7 +233,7 @@ const selectedType = ref(null);
 const displayAddModal = ref(false);
 const newOperation = ref({
 	type: '',
-	date: '',
+	date: new Date(),
 	amount: 0,
 	category: '',
 	description: '',
@@ -250,7 +265,7 @@ const formatDate = (dateString) => {
 
 // Открыть модальное окно добавления
 const openAddModal = () => {
-	newOperation.value = { type: '', date: '', amount: 0, category: '', description: '' };
+	newOperation.value = { type: '', date: new Date(), amount: 0, category: '', description: '' };
 	displayAddModal.value = true;
 };
 
@@ -274,10 +289,11 @@ const confirmDelete = (operation) => {
 		message: 'Вы уверены, что хотите удалить эту операцию?',
 		header: 'Подтверждение удаления',
 		icon: 'pi pi-exclamation-triangle',
-		acceptLabel: 'Да', // Текст для кнопки "Принять"
+		acceptLabel: 'Да',
 		rejectLabel: 'Нет',
-		acceptClass: 'custom-accept-button', // Класс для кнопки "Принять"
-		rejectClass: 'custom-reject-button',
+		acceptProps: { size: 'small', severity: 'success' },
+		rejectProps: { size: 'small', severity: 'danger' },
+		acceptClass: 'custom-accept-button',
 		accept: () => deleteOperation(operation),
 	});
 };
@@ -287,15 +303,3 @@ const deleteOperation = (operation) => {
 	operations.value = operations.value.filter(op => op.id !== operation.id);
 };
 </script>
-
-<style>
-.custom-accept-button {
-  background-color: #4caf50 !important; /* Зеленый цвет для кнопки "Принять" */
-  border-color: #4caf50 !important;
-}
-
-.custom-reject-button {
-  background-color: #f44336 !important; /* Красный цвет для кнопки "Отклонить" */
-  border-color: #f44336 !important;
-}
-</style>

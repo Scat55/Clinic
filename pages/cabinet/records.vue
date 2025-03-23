@@ -1,29 +1,30 @@
 <template>
-	<div class="card">
-		<Card>
-			<template #content>
-				<DataTable
-					:value="products"
-					paginator
-					:rows="5"
-					table-style="min-width: 15rem"
-				>
-					<Column
-						field="name"
-						header="Клиент"
-					/>
-					<Column
-						field="doctor_name"
-						header="Имя Врача"
-					/>
-					<Column
-						field="date"
-						header="Дата приема"
-					/>
-				</DataTable>
-			</template>
-		</Card>
-	</div>
+	<Card>
+		<template #content>
+			<DataTable
+				:value="products"
+				paginator
+				:rows="5"
+				table-style="min-width: 15rem"
+			>
+				<Column
+					field="name"
+					header="Клиент"
+					class="text-sm"
+				/>
+				<Column
+					field="doctor_name"
+					header="Имя Врача"
+					class="text-sm"
+				/>
+				<Column
+					field="date"
+					header="Дата приема"
+					class="text-sm"
+				/>
+			</DataTable>
+		</template>
+	</Card>
 </template>
 
 <script setup>

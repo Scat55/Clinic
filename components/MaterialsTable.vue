@@ -7,6 +7,7 @@
 			<InputText
 				v-model="searchQuery"
 				placeholder="Поиск по материалам"
+				size="small"
 				class="w-full p-2 border rounded-lg mr-4"
 			/>
 			<Button
@@ -80,17 +81,20 @@
 			<div class="space-y-4">
 				<InputText
 					v-model="newMaterial.name"
+					size="small"
 					placeholder="Название материала"
 					class="w-full"
 				/>
 				<InputNumber
 					v-model="newMaterial.quantity"
+					size="small"
 					placeholder="Количество"
 					class="w-full"
 					:min="0"
 				/>
 				<InputText
 					v-model="newMaterial.unit"
+					size="small"
 					placeholder="Единица измерения"
 					class="w-full"
 				/>
@@ -99,11 +103,13 @@
 					placeholder="Дата последней поставки"
 					date-format="dd.mm.yy"
 					class="w-full"
+					size="small"
 				/>
 				<InputText
 					v-model="newMaterial.supplier"
 					placeholder="Поставщик"
 					class="w-full"
+					size="small"
 				/>
 			</div>
 			<template #footer>
@@ -137,39 +143,47 @@
 					v-model="selectedMaterial.name"
 					placeholder="Название материала"
 					class="w-full"
+					size="small"
 				/>
 				<InputNumber
 					v-model="selectedMaterial.quantity"
 					placeholder="Количество"
 					class="w-full"
 					:min="0"
+					size="small"
 				/>
 				<InputText
 					v-model="selectedMaterial.unit"
 					placeholder="Единица измерения"
 					class="w-full"
+					size="small"
 				/>
 				<Calendar
 					v-model="selectedMaterial.lastDelivery"
 					placeholder="Дата последней поставки"
 					date-format="dd.mm.yy"
 					class="w-full"
+					size="small"
 				/>
 				<InputText
 					v-model="selectedMaterial.supplier"
 					placeholder="Поставщик"
 					class="w-full"
+					size="small"
 				/>
 			</div>
 			<template #footer>
 				<Button
 					label="Отмена"
+					size="small"
+					severity="danger"
 					icon="pi pi-times"
 					class="p-button-text"
 					@click="closeEditModal"
 				/>
 				<Button
 					label="Сохранить"
+					size="small"
 					icon="pi pi-check"
 					class="p-button-success"
 					@click="updateMaterial"
@@ -367,7 +381,7 @@ const newMaterial = ref({
 	name: '',
 	quantity: 0,
 	unit: '',
-	lastDelivery: '',
+	lastDelivery: new Date(),
 	supplier: '',
 });
 const selectedMaterial = ref({});
@@ -382,7 +396,7 @@ const filteredMaterials = computed(() => {
 
 // Открыть модальное окно добавления
 const openAddModal = () => {
-	newMaterial.value = { name: '', quantity: 0, unit: '', lastDelivery: '', supplier: '' };
+	newMaterial.value = { name: '', quantity: 0, unit: '', lastDelivery: new Date(), supplier: '' };
 	displayAddModal.value = true;
 };
 
@@ -426,6 +440,10 @@ const confirmDelete = (material) => {
 		message: 'Вы уверены, что хотите удалить этот материал?',
 		header: 'Подтверждение удаления',
 		icon: 'pi pi-exclamation-triangle',
+		acceptLabel: 'Да',
+		rejectLabel: 'Нет',
+		acceptProps: { size: 'small', severity: 'success' },
+		rejectProps: { size: 'small', severity: 'danger' },
 		accept: () => deleteMaterial(material),
 	});
 };
