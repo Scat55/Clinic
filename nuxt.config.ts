@@ -2,6 +2,7 @@
 import { fileURLToPath } from 'node:url';
 import tailwindcss from '@tailwindcss/vite';
 import Aura from '@primevue/themes/aura';
+import { stylePreset } from './service/Preset';
 
 export default defineNuxtConfig({
 	modules: [
@@ -42,7 +43,7 @@ export default defineNuxtConfig({
 	primevue: {
 		options: {
 			theme: {
-				preset: Aura,
+				preset: stylePreset,
 				options: {
 					darkModeSelector: false,
 				},

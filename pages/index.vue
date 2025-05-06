@@ -110,184 +110,30 @@
 				</div>
 
 				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
-					<!-- Карточка услуги 1 -->
 					<Card
+						v-for="service in services"
+						:key="service.id"
 						class="service-card cursor-pointer"
-						@click="openModal(services[0])"
+						@click="openModal(services[service.id])"
 					>
 						<template #header>
 							<img
-								src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=800&auto=format&fit=crop"
-								alt="Терапевтическая стоматология"
+								:src="service.image"
+								:alt="service.title"
 								class="w-full h-48 sm:h-56 object-cover"
 							>
 						</template>
 						<template #title>
-							Терапевтическая стоматология
+							{{ service.title }}
 						</template>
 						<template #content>
 							<p class="text-gray-600 text-sm sm:text-base line-clamp-2">
-								Лечение кариеса, пульпита, периодонтита и других заболеваний зубов
+								{{ service.fullDescription }}
 							</p>
 						</template>
 						<template #footer>
 							<div class="flex justify-between items-center">
-								<span class="font-bold text-primary">от 3 000 ₽</span>
-								<Button
-									label="Подробнее"
-									class="p-button-text text-primary text-sm sm:text-base"
-								/>
-							</div>
-						</template>
-					</Card>
-
-					<!-- Карточка услуги 2 -->
-					<Card
-						class="service-card cursor-pointer"
-						@click="openModal(services[1])"
-					>
-						<template #header>
-							<img
-								src="https://images.unsplash.com/photo-1629909613651-28d7a82ef0f7?w=800&auto=format&fit=crop"
-								alt="Ортодонтия"
-								class="w-full h-48 sm:h-56 object-cover"
-							>
-						</template>
-						<template #title>
-							Ортодонтия
-						</template>
-						<template #content>
-							<p class="text-gray-600 text-sm sm:text-base line-clamp-2">
-								Исправление прикуса и выравнивание зубов у детей и взрослых
-							</p>
-						</template>
-						<template #footer>
-							<div class="flex justify-between items-center">
-								<span class="font-bold text-primary">от 25 000 ₽</span>
-								<Button
-									label="Подробнее"
-									class="p-button-text text-primary text-sm sm:text-base"
-								/>
-							</div>
-						</template>
-					</Card>
-
-					<!-- Карточка услуги 3 -->
-					<Card
-						class="service-card cursor-pointer"
-						@click="openModal(services[2])"
-					>
-						<template #header>
-							<img
-								src="https://images.unsplash.com/photo-1564518081-e68ef56a2c61?w=800&auto=format&fit=crop"
-								alt="Имплантация"
-								class="w-full h-48 sm:h-56 object-cover"
-							>
-						</template>
-						<template #title>
-							Имплантация зубов
-						</template>
-						<template #content>
-							<p class="text-gray-600 text-sm sm:text-base line-clamp-2">
-								Современные методы восстановления утраченных зубов
-							</p>
-						</template>
-						<template #footer>
-							<div class="flex justify-between items-center">
-								<span class="font-bold text-primary">от 35 000 ₽</span>
-								<Button
-									label="Подробнее"
-									class="p-button-text text-primary text-sm sm:text-base"
-								/>
-							</div>
-						</template>
-					</Card>
-
-					<!-- Карточка услуги 4 -->
-					<Card
-						class="service-card cursor-pointer"
-						@click="openModal(services[3])"
-					>
-						<template #header>
-							<img
-								src="https://images.unsplash.com/photo-1616097092367-d9a416672473?w=800&auto=format&fit=crop"
-								alt="Протезирование"
-								class="w-full h-48 sm:h-56 object-cover"
-							>
-						</template>
-						<template #title>
-							Протезирование зубов
-						</template>
-						<template #content>
-							<p class="text-gray-600 text-sm sm:text-base line-clamp-2">
-								Коронки, мосты и съёмные протезы любой сложности
-							</p>
-						</template>
-						<template #footer>
-							<div class="flex justify-between items-center">
-								<span class="font-bold text-primary">от 15 000 ₽</span>
-								<Button
-									label="Подробнее"
-									class="p-button-text text-primary text-sm sm:text-base"
-								/>
-							</div>
-						</template>
-					</Card>
-
-					<!-- Карточка услуги 5 -->
-					<Card
-						class="service-card cursor-pointer"
-						@click="openModal(services[4])"
-					>
-						<template #header>
-							<img
-								src="https://images.unsplash.com/photo-1607308466549-6ea5f2562cd5?w=800&auto=format&fit=crop"
-								alt="Отбеливание"
-								class="w-full h-48 sm:h-56 object-cover"
-							>
-						</template>
-						<template #title>
-							Отбеливание зубов
-						</template>
-						<template #content>
-							<p class="text-gray-600 text-sm sm:text-base line-clamp-2">
-								Профессиональное отбеливание Zoom и другие современные методики
-							</p>
-						</template>
-						<template #footer>
-							<div class="flex justify-between items-center">
-								<span class="font-bold text-primary">от 12 000 ₽</span>
-								<Button
-									label="Подробнее"
-									class="p-button-text text-primary text-sm sm:text-base"
-								/>
-							</div>
-						</template>
-					</Card>
-
-					<!-- Карточка услуги 6 -->
-					<Card
-						class="service-card cursor-pointer"
-						@click="openModal(services[5])"
-					>
-						<template #header>
-							<img
-								src="https://images.unsplash.com/photo-1586314624893-4f02d8b31e45?w=800&auto=format&fit=crop"
-								alt="Детская стоматология"
-								class="w-full h-48 sm:h-56 object-cover"
-							>
-						</template>
-						<template #title>
-							Детская стоматология
-						</template>
-						<template #content>
-							<p class="text-gray-600 text-sm sm:text-base line-clamp-2">
-								Специальные программы для детей с игровой атмосферой
-							</p>
-						</template>
-						<template #footer>
-							<div class="flex justify-between items-center">
-								<span class="font-bold text-primary">от 2 500 ₽</span>
+								<span class="font-bold text-primary"> {{ service.price }}</span>
 								<Button
 									label="Подробнее"
 									class="p-button-text text-primary text-sm sm:text-base"
@@ -821,7 +667,13 @@
 	</div>
 </template>
 
-<script setup>
+<script setup lang="ts">
+import OrtodontImage from '@/app/assets/images/ortodont.jpg';
+import ImplantImage from '@/app/assets/images/implant.jpg';
+import ProtezImage from '@/app/assets/images/protezz.jpg';
+import WhiteTeeth from '@/app/assets/images/whiteTeeth.jpg';
+import ChildrenTeeth from '@/app/assets/images/childrenTeeth.jpg';
+
 definePageMeta({
 	layout: false,
 });
@@ -838,6 +690,7 @@ const selectedService = ref({
 
 const services = ref([
 	{
+		id: 0,
 		title: 'Терапевтическая стоматология',
 		image: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=800&auto=format&fit=crop',
 		price: 'от 3 000 ₽',
@@ -859,8 +712,9 @@ const services = ref([
 		duration: 'от 30 минут до 1,5 часов',
 	},
 	{
+		id: 1,
 		title: 'Ортодонтия',
-		image: 'https://images.unsplash.com/photo-1629909613651-28d7a82ef0f7?w=800&auto=format&fit=crop',
+		image: OrtodontImage,
 		price: 'от 25 000 ₽',
 		fullDescription: 'Исправление прикуса и выравнивание зубов с использованием брекетов, кап и других методов. Ортодонтическое лечение подходит как для детей, так и для взрослых.',
 		includes: [
@@ -878,8 +732,9 @@ const services = ref([
 		duration: '1-2 года',
 	},
 	{
+		id: 2,
 		title: 'Имплантация зубов',
-		image: 'https://images.unsplash.com/photo-1564518081-e68ef56a2c61?w=800&auto=format&fit=crop',
+		image: ImplantImage,
 		price: 'от 35 000 ₽',
 		fullDescription: 'Имплантация зубов — это наиболее современный и эффективный способ восстановления утраченных зубов. Мы используем импланты мировых производителей, что гарантирует долгосрочный результат.',
 		includes: [
@@ -896,8 +751,9 @@ const services = ref([
 		duration: '1-2 дня (в зависимости от сложности)',
 	},
 	{
+		id: 3,
 		title: 'Протезирование зубов',
-		image: 'https://images.unsplash.com/photo-1616097092367-d9a416672473?w=800&auto=format&fit=crop',
+		image: ProtezImage,
 		price: 'от 15 000 ₽',
 		fullDescription: 'Протезирование зубов - это восстановление утраченных зубов с использованием современных материалов, таких как цирконий, металл-керамика и акрил. Доступны мостовидные, коронковые и съёмные протезы.',
 		includes: [
@@ -913,8 +769,9 @@ const services = ref([
 		duration: '1-3 недели',
 	},
 	{
+		id: 4,
 		title: 'Отбеливание зубов',
-		image: 'https://images.unsplash.com/photo-1607308466549-6ea5f2562cd5?w=800&auto=format&fit=crop',
+		image: WhiteTeeth,
 		price: 'от 12 000 ₽',
 		fullDescription: 'Профессиональное отбеливание зубов с использованием новейших методов, таких как Zoom и другие технологии. Ваши зубы станут на несколько тонов светлее, а улыбка — сияющей и здоровой.',
 		includes: [
@@ -930,8 +787,9 @@ const services = ref([
 		duration: '1-2 часа',
 	},
 	{
+		id: 5,
 		title: 'Детская стоматология',
-		image: 'https://images.unsplash.com/photo-1586314624893-4f02d8b31e45?w=800&auto=format&fit=crop',
+		image: ChildrenTeeth,
 		price: 'от 2 500 ₽',
 		fullDescription: 'Детская стоматология — это забота о здоровье зубов ваших детей. Мы используем только щадящие и безопасные методики лечения, чтобы дети не боялись визитов к стоматологу.',
 		includes: [
