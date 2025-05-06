@@ -16,7 +16,7 @@ export default defineNuxtConfig({
 			charset: 'utf-8',
 			viewport: 'width=device-width, initial-scale=1',
 			title: 'Доверие',
-			link: [{ rel: 'icon', type: 'image/x-icon', href: '/Logo.ico' }],
+			link: [{ rel: 'icon', type: 'image/x-icon', href: '/logo.png' }],
 		},
 	},
 	css: ['@/app/assets/styles/main.css'],

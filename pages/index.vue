@@ -378,6 +378,21 @@
 						<h3 class="text-2xl font-bold mb-6">
 							Форма записи
 						</h3>
+
+						<div
+							v-if="isSuccess"
+							class="mb-6 p-4 bg-green-100 text-green-700 rounded"
+						>
+							Спасибо! Ваша заявка успешно отправлена. Мы свяжемся с вами в ближайшее время.
+						</div>
+
+						<div
+							v-if="errorMessage"
+							class="mb-6 p-4 bg-red-100 text-red-700 rounded"
+						>
+							{{ errorMessage }}
+						</div>
+
 						<div class="grid grid-cols-1 gap-6">
 							<div>
 								<label
@@ -386,7 +401,9 @@
 								>Ваше имя</label>
 								<InputText
 									id="name"
+									v-model="formData.name"
 									class="w-full"
+									placeholder="Иван Иванов"
 								/>
 							</div>
 							<div>
@@ -396,6 +413,7 @@
 								>Телефон</label>
 								<InputMask
 									id="phone"
+									v-model="formData.phone"
 									class="w-full"
 									mask="+7(999)-999-99-99"
 									placeholder="+7(999)-999-99-99"
@@ -408,6 +426,7 @@
 								>Услуга</label>
 								<Dropdown
 									id="service"
+									v-model="formData.service"
 									:options="services"
 									option-label="title"
 									placeholder="Выберите услугу"
@@ -421,13 +440,18 @@
 								>Желаемая дата</label>
 								<Calendar
 									id="date"
+									v-model="formData.date"
 									class="w-full"
-									format="dd-mm-yyyy"
+									:min-date="new Date()"
+									date-format="dd.mm.yy"
+									placeholder="Выберите дату"
 								/>
 							</div>
 							<Button
 								label="Отправить заявку"
+								:loading="isSubmitting"
 								class="p-button-lg w-full bg-primary border-primary hover:bg-primary-dark"
+								@click="submitForm"
 							/>
 						</div>
 					</div>
@@ -673,10 +697,16 @@ import ImplantImage from '@/app/assets/images/implant.jpg';
 import ProtezImage from '@/app/assets/images/protezz.jpg';
 import WhiteTeeth from '@/app/assets/images/whiteTeeth.jpg';
 import ChildrenTeeth from '@/app/assets/images/childrenTeeth.jpg';
+import { FormService } from '~/service/formService';
 
 definePageMeta({
 	layout: false,
 });
+
+const isSubmitting = ref(false);
+const isSuccess = ref(false);
+const errorMessage = ref('');
+
 const modalVisible = ref(false);
 const selectedService = ref({
 	title: '',
@@ -807,9 +837,50 @@ const services = ref([
 	},
 ]);
 
+const formData = ref({
+	name: '',
+	phone: '',
+	service: null,
+	date: null,
+});
+
 const openModal = (service) => {
 	selectedService.value = service;
 	modalVisible.value = true;
+};
+
+const submitForm = async () => {
+	if (!formData.value.name || !formData.value.phone || !formData.value.service || !formData.value.date) {
+		errorMessage.value = 'Пожалуйста, заполните все поля';
+		return;
+	}
+
+	isSubmitting.value = true;
+	errorMessage.value = '';
+
+	try {
+		await FormService.submitForm({
+			name: formData.value.name,
+			phone: formData.value.phone,
+			service: formData.value.service.title,
+			date: formData.value.date.toISOString(),
+		});
+
+		isSuccess.value = true;
+		formData.value = { name: '', phone: '', service: null, date: null };
+
+		// Сбросить статус успеха через 5 секунд
+		setTimeout(() => {
+			isSuccess.value = false;
+		}, 5000);
+	}
+	catch (error) {
+		errorMessage.value = 'Произошла ошибка при отправке формы. Пожалуйста, попробуйте еще раз.';
+		console.error(error);
+	}
+	finally {
+		isSubmitting.value = false;
+	}
 };
 </script>
 
