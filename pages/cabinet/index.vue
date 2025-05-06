@@ -186,7 +186,7 @@ onMounted(() => {
 		</div>
 
 		<!-- Основной контент -->
-		<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+		<div class="grid grid-cols-1 mt-[30px] lg:grid-cols-3 gap-6">
 			<!-- Ближайшие записи -->
 			<Card class="lg:col-span-2">
 				<template #title>
