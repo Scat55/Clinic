@@ -227,22 +227,6 @@
 						<i class="pi pi-clock mr-2" />
 						<span>Длительность: {{ selectedService.duration }}</span>
 					</div>
-					<div class="flex gap-2">
-						<Button
-							label="Закрыть"
-							icon="pi pi-times"
-							size="small"
-							severity="danger"
-							class="border-gray-300 text-gray-700"
-							@click="modalVisible = false"
-						/>
-						<Button
-							label="Записаться на прием"
-							size="small"
-							severity="primary"
-							class="border-primary hover:bg-primary-dark"
-						/>
-					</div>
 				</div>
 			</template>
 		</Dialog>
