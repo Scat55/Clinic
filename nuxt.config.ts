@@ -20,6 +20,9 @@ export default defineNuxtConfig({
 		},
 	},
 	css: ['@/app/assets/styles/main.css'],
+	routeRules: {
+		'/cabinet/**': { middleware: 'auth' },
+	},
 	compatibilityDate: '2024-11-01',
 	vite: {
 		plugins: [
