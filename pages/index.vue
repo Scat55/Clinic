@@ -426,6 +426,8 @@
 									id="date"
 									v-model="formData.date"
 									class="w-full"
+									show-time
+									hour-format="24"
 									:min-date="new Date()"
 									date-format="dd.mm.yy"
 									placeholder="Выберите дату"
@@ -676,6 +678,8 @@
 </template>
 
 <script setup lang="ts">
+import { parseISO, format } from 'date-fns';
+import { ru } from 'date-fns/locale';
 import OrtodontImage from '@/app/assets/images/ortodont.jpg';
 import ImplantImage from '@/app/assets/images/implant.jpg';
 import ProtezImage from '@/app/assets/images/protezz.jpg';
@@ -842,7 +846,23 @@ const submitForm = async () => {
 	isSubmitting.value = true;
 	errorMessage.value = '';
 
+	const date = new Date(formData.value.date);
+	date.setHours(date.getHours());
+
+	const formattedDate = format(date, 'd MMMM \'в\' HH:mm', { locale: ru });
+
 	try {
+		await $fetch('/api/send-sms', {
+			method: 'POST',
+			body: {
+				phone: formData.value.phone, // без +, но с 7 в начале
+				message: `Приветствуем, ${formData.value.name}!
+				 Ваша запись в Клинику "Доверие" подтверждена.
+				 Вы записались на ${formData.value.service.title}
+				 Ждём вас ${formattedDate}. Хорошего дня! 😊`,
+			},
+		});
+
 		await FormService.submitForm({
 			name: formData.value.name,
 			phone: formData.value.phone,

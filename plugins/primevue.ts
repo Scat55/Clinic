@@ -1,9 +1,27 @@
-// plugins/primevue.js
+// plugins/primevue.ts
 import PrimeVue from 'primevue/config';
 import ToastService from 'primevue/toastservice';
-import 'primeicons/primeicons.css'; // Стили для иконок
+import 'primeicons/primeicons.css';
 
 export default defineNuxtPlugin((nuxtApp) => {
-	nuxtApp.vueApp.use(PrimeVue);
-	nuxtApp.vueApp.use(ToastService); // если нужны тосты
+	nuxtApp.vueApp.use(PrimeVue, {
+		// ⚠️ Locale передаётся прямо сюда
+		locale: {
+			firstDayOfWeek: 1,
+			dayNames: ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'],
+			dayNamesShort: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
+			dayNamesMin: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
+			monthNames: [
+				'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
+				'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь',
+			],
+			monthNamesShort: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'],
+			today: 'Сегодня',
+			clear: 'Очистить',
+			dateFormat: 'dd.mm.yy',
+			weekHeader: 'Нед',
+		},
+	});
+
+	nuxtApp.vueApp.use(ToastService);
 });
