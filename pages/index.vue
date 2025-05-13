@@ -680,12 +680,14 @@
 <script setup lang="ts">
 import { parseISO, format } from 'date-fns';
 import { ru } from 'date-fns/locale';
+import axios from 'axios';
 import OrtodontImage from '@/app/assets/images/ortodont.jpg';
 import ImplantImage from '@/app/assets/images/implant.jpg';
 import ProtezImage from '@/app/assets/images/protezz.jpg';
 import WhiteTeeth from '@/app/assets/images/whiteTeeth.jpg';
 import ChildrenTeeth from '@/app/assets/images/childrenTeeth.jpg';
 import { FormService } from '~/service/formService';
+import { useClientsStore } from '~/stores/clients';
 
 definePageMeta({
 	layout: false,
@@ -852,16 +854,46 @@ const submitForm = async () => {
 	const formattedDate = format(date, 'd MMMM \'в\' HH:mm', { locale: ru });
 
 	try {
-		await $fetch('/api/send-sms', {
-			method: 'POST',
-			body: {
-				phone: formData.value.phone, // без +, но с 7 в начале
-				message: `Приветствуем, ${formData.value.name}!
-				 Ваша запись в Клинику "Доверие" подтверждена.
-				 Вы записались на ${formData.value.service.title}
-				 Ждём вас ${formattedDate}. Хорошего дня! 😊`,
-			},
-		});
+		// await $fetch('https://bystrodmitry@gmail.com:xqWskvxVhlKXRQs40yE5T228FgGJrYFa@gate.smsaero.ru/v2/auth', {
+		// 	body: {
+		// 		number: formData.value.phone, // без +, но с 7 в начале
+		// 		sign: 'Клиника Доверие',
+		// 		text: `Приветствуем, ${formData.value.name}!
+		// 		 Ваша запись в Клинику "Доверие" подтверждена.
+		// 		 Вы записались на ${formData.value.service.title}
+		// 		 Ждём вас ${formattedDate}. Хорошего дня! 😊`,
+		// 	},
+		// });
+
+		// const email = 'bystrodmitry@gmail.com';
+		// const apiKey = 'xqWskvxVhlKXRQs40yE5T228FgGJrYFa';
+		// const auth = Buffer.from(`${email}:${apiKey}`).toString('base64');
+
+		// const response = await axios.get('https://gate.smsaero.ru/v2/sms/testsend', {
+		// 	params: {
+		// 		number: '79092233323', // без + и скобок
+		// 		text: 'Test text',
+		// 		sign: 'BIZNES',
+		// 	},
+		// 	headers: {
+		// 		Authorization: `Basic ${auth}`,
+		// 	},
+		// });
+		// const text = `Приветствуем, ${formData.value.name}!
+		// 		 Ваша запись в Клинику "Доверие" подтверждена.
+		//  		 Вы записались на ${formData.value.service.title}
+		//  		 Ждём вас ${formattedDate}. Хорошего дня! 😊`;
+
+		const clientsStore = useClientsStore();
+
+		const formValue = {
+			name: formData.value.name,
+			phone: formData.value.phone,
+			service: formData.value.service.title,
+			date: formData.value.date.toISOString(),
+		};
+
+		await clientsStore.createClient(formValue);
 
 		await FormService.submitForm({
 			name: formData.value.name,

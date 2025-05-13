@@ -8,6 +8,7 @@ export default defineNuxtConfig({
 	modules: [
 		'@nuxt/eslint',
 		'@primevue/nuxt-module',
+		'@pinia/nuxt',
 	],
 	plugins: ['~/plugins/primevue.ts'],
 	devtools: { enabled: true },
