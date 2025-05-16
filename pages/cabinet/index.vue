@@ -1,51 +1,16 @@
 <script setup lang="ts">
-import type { Appointment } from '~/types/appointment';
-import type { StatisticCard } from '~/types/statistic';
+import { useClientsStore } from '#imports';
 import { FormService } from '~/service/formService';
 
-// Получаем записи из localStorage
-const appointments = ref<Appointment[]>([]);
-const appointmentsLoading = ref(false);
+const clientStore = useClientsStore();
+const { clients } = storeToRefs(clientStore);
 
-// Загружаем данные
-const loadAppointments = () => {
-	appointmentsLoading.value = true;
-	try {
-		const today = new Date().toISOString().split('T')[0];
-
-		// Получаем все записи и фильтруем по сегодняшней дате
-		const allAppointments = FormService.getStoredForms();
-		appointments.value = allAppointments
-			.map(app => ({
-				...app,
-				id: app.createdAt, // Используем время создания как ID
-				status: getRandomStatus(), // Добавляем случайный статус для демонстрации
-				time: formatTime(app.date), // Форматируем время
-				patient: { name: app.name }, // Форматируем для таблицы
-				doctor: { name: 'Доктор Иванов' }, // Заглушка для демонстрации
-				service: { name: app.service }, // Форматируем для таблицы
-			}))
-			.filter(app => new Date(app.date).toISOString().split('T')[0] === today);
-	}
-	catch (error) {
-		console.error('Error loading appointments:', error);
-	}
-	finally {
-		appointmentsLoading.value = false;
-	}
-};
-
-// Функция для генерации случайного статуса (для демонстрации)
-const getRandomStatus = () => {
-	const statuses = ['confirmed', 'pending', 'cancelled'];
-	return statuses[Math.floor(Math.random() * statuses.length)];
-};
-
-// Форматирование времени
-const formatTime = (dateString: string) => {
-	const date = new Date(dateString);
-	return date.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
-};
+const openModal = ref(false);
+const statuses = ref([
+	{ name: 'Ожидание' },
+	{ name: 'Подтвержден' },
+	{ name: 'Отменен' },
+]);
 
 // Карточки статистики
 const statCards = ref([
@@ -62,18 +27,20 @@ const statCards = ref([
 		color: 'bg-green-100 text-green-600',
 	},
 	{
-		title: 'Выручка',
-		value: '0 ₽',
-		icon: 'pi pi-wallet',
-		color: 'bg-purple-100 text-purple-600',
-	},
-	{
 		title: 'Свободные окна',
 		value: 0,
 		icon: 'pi pi-clock',
 		color: 'bg-orange-100 text-orange-600',
 	},
 ]);
+
+const openForm = () => {
+	openModal.value = true;
+};
+
+const closeForm = () => {
+	openModal.value = false;
+};
 
 // Обновляем статистику
 const updateStats = () => {
@@ -91,8 +58,7 @@ const updateStats = () => {
 	// Обновляем карточки
 	statCards.value[0].value = todayAppointments;
 	statCards.value[1].value = uniqueNames.size;
-	statCards.value[2].value = `${(todayAppointments * 2500).toLocaleString()} ₽`; // Заглушка: 2500₽ за визит
-	statCards.value[3].value = Math.max(0, 10 - todayAppointments); // Предположим, что всего 10 слотов
+	statCards.value[2].value = Math.max(0, 10 - todayAppointments); // Предположим, что всего 10 слотов
 };
 
 // График статистики
@@ -117,10 +83,22 @@ const chartOptions = ref({
 	},
 });
 
+function onStatusChange(client, id) {
+	// здесь client уже обновлен по v-model
+	// если хочешь, можешь вызвать метод стора для сохранения или обновления на сервере
+	console.log('Статус клиента изменён:', client.name, client.status);
+
+	// например, вызов обновления в сторе
+	clientStore.updateClientStatus(client, client.id);
+}
+
 // Загружаем данные при монтировании
 onMounted(() => {
-	loadAppointments();
 	updateStats();
+});
+
+onBeforeMount(async () => {
+	await clientStore.getAllClients();
 });
 </script>
 
@@ -197,51 +175,47 @@ onMounted(() => {
 				</template>
 
 				<template #content>
-					<div v-if="appointments.length">
+					<div v-if="clients">
 						<DataTable
-							:value="appointments"
-							:loading="appointmentsLoading"
+							:value="clients"
 							:rows="5"
 							paginator
 							class="p-datatable-sm"
 							striped-rows
 						>
 							<Column
-								field="time"
+								field="date"
 								header="Время"
 								style="width: 20%"
 							/>
 							<Column
-								field="patient.name"
+								field="name"
 								header="Пациент"
 								style="width: 25%"
 							/>
-							<Column
+							<!-- <Column
 								field="doctor.name"
 								header="Врач"
 								style="width: 25%"
-							/>
+							/> -->
 							<Column
-								field="service.name"
+								field="service"
 								header="Услуга"
 								style="width: 20%"
 							/>
 							<Column
 								header="Статус"
+								field="status"
 								style="width: 10%"
 							>
 								<template #body="{ data }">
-									<Tag
-										:value="{
-											confirmed: 'Подтвержден',
-											pending: 'Ожидание',
-											cancelled: 'Отменен',
-										}[data.status]"
-										:severity="{
-											confirmed: 'success',
-											pending: 'warning',
-											cancelled: 'danger',
-										}[data.status] || 'info'"
+									<Select
+										v-model="data.status"
+										:options="statuses"
+										option-label="name"
+										option-value="name"
+										class="w-full md:w-56"
+										@change="onStatusChange(data, data.id)"
 									/>
 								</template>
 							</Column>

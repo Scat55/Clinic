@@ -1,15 +1,4 @@
-import { defineStore } from 'pinia';
-
-interface Client {
-	id?: number;
-	name: string;
-	phone?: string;
-	service: string;
-	date: string;
-}
-
-export const useClientsStore = defineStore('clients', () => {
-	// Состояние
+export const useClientsStore = defineStore('client', () => {
 	const clients = ref<Client[]>([]);
 	const loading = ref(false);
 	const error = ref<string | null>(null);
@@ -23,24 +12,6 @@ export const useClientsStore = defineStore('clients', () => {
 		}
 		// Для клиентской стороны используем env или дефолтное значение
 		return process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:3001';
-	};
-
-	// Действия
-	const fetchClients = async () => {
-		loading.value = true;
-		error.value = null;
-		try {
-			const { data } = await useFetch<Client[]>(`${getApiBase()}/clients`);
-			if (data.value) {
-				clients.value = data.value;
-			}
-		}
-		catch (err) {
-			error.value = err instanceof Error ? err.message : 'Ошибка при загрузке клиентов';
-		}
-		finally {
-			loading.value = false;
-		}
 	};
 
 	const createClient = async (clientData: Omit<Client, 'id'>) => {
@@ -66,22 +37,46 @@ export const useClientsStore = defineStore('clients', () => {
 		}
 	};
 
-	// Геттеры
-	const getClientById = (id: number) => {
-		return clients.value.find(client => client.id === id);
+	const getAllClients = async () => {
+		loading.value = true;
+		error.value = null;
+
+		try {
+			const response = await $fetch<Client[]>(`${getApiBase()}/clients`);
+
+			clients.value = response.map(client => ({
+				...client,
+				date: new Date(client.date).toLocaleTimeString('ru-RU', {
+					hour: '2-digit',
+					minute: '2-digit',
+				}),
+				status: client.status || 'Ожидание',
+			}));
+			loading.value = false;
+		}
+		catch (err) {
+			error.value = err instanceof Error ? err.message : 'Ошибка при загрузке клиентов';
+		}
 	};
 
-	const sortedClients = computed(() => {
-		return [...clients.value].sort((a, b) => a.name.localeCompare(b.name));
+	const updateClientStatus = async (client, id) => {
+		loading.value = true;
+		error.value = null;
+
+		try {
+			const response = await $fetch<Client[]>(`${getApiBase()}/clients/${id}`, {
+				method: 'PUT',
+				body: { ...client, date: client.date.toISOString() },
+			});
+		}
+		catch (err) {
+			error.value = err instanceof Error ? err.message : 'Ошибка при загрузке клиентов';
+		}
+	};
+
+	const getClients = computed(() => {
+		return clients.value.length;
 	});
 
-	return {
-		clients,
-		loading,
-		error,
-		fetchClients,
-		createClient,
-		getClientById,
-		sortedClients,
-	};
+	return { clients, loading, error, createClient, getAllClients, updateClientStatus, getClients };
 });

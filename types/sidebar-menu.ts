@@ -1,5 +1,5 @@
-export default interface SidebarMenu{
-    title: string
-    link: string
-    icon?: string
+export default interface SidebarMenu {
+	title: string;
+	link: string;
+	icon?: string;
 }
