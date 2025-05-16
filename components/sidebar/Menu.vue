@@ -3,7 +3,6 @@ import type SidebarMenu from '~/types/sidebar-menu';
 
 const items = ref<SidebarMenu[]>([
 	{ title: 'Пациенты', link: '/cabinet/clients', icon: 'pi pi-users' },
-	{ title: 'Финансы', link: '/cabinet/finance', icon: 'pi pi-wallet' },
 	{ title: 'Склад', link: '/cabinet/warehouse', icon: 'pi pi-warehouse' },
 ]);
 defineEmits(['close']);

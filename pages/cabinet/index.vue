@@ -5,7 +5,6 @@ import { FormService } from '~/service/formService';
 const clientStore = useClientsStore();
 const { clients } = storeToRefs(clientStore);
 
-const openModal = ref(false);
 const statuses = ref([
 	{ name: 'Ожидание' },
 	{ name: 'Подтвержден' },
@@ -33,14 +32,6 @@ const statCards = ref([
 		color: 'bg-orange-100 text-orange-600',
 	},
 ]);
-
-const openForm = () => {
-	openModal.value = true;
-};
-
-const closeForm = () => {
-	openModal.value = false;
-};
 
 // Обновляем статистику
 const updateStats = () => {
@@ -175,7 +166,7 @@ onBeforeMount(async () => {
 				</template>
 
 				<template #content>
-					<div v-if="clients">
+					<div v-if="clients.length">
 						<DataTable
 							:value="clients"
 							:rows="5"

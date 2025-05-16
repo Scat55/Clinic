@@ -46,10 +46,6 @@ export const useClientsStore = defineStore('client', () => {
 
 			clients.value = response.map(client => ({
 				...client,
-				date: new Date(client.date).toLocaleTimeString('ru-RU', {
-					hour: '2-digit',
-					minute: '2-digit',
-				}),
 				status: client.status || 'Ожидание',
 			}));
 			loading.value = false;
@@ -66,7 +62,7 @@ export const useClientsStore = defineStore('client', () => {
 		try {
 			const response = await $fetch<Client[]>(`${getApiBase()}/clients/${id}`, {
 				method: 'PUT',
-				body: { ...client, date: client.date.toISOString() },
+				body: client,
 			});
 		}
 		catch (err) {

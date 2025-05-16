@@ -890,7 +890,10 @@ const submitForm = async () => {
 			name: formData.value.name,
 			phone: formData.value.phone,
 			service: formData.value.service.title,
-			date: formData.value.date.toISOString(),
+			date: new Date(formData.value.date).toLocaleTimeString('ru-RU', {
+				hour: '2-digit',
+				minute: '2-digit',
+			}),
 		};
 
 		await clientsStore.createClient(formValue);
