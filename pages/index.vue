@@ -335,31 +335,31 @@
 		<!-- Appointment Section -->
 		<section
 			id="form"
-			class="py-20 bg-blue-700 text-white"
+			class="py-5 md:py-20 bg-blue-700 text-white text-center md:text-start"
 		>
 			<div class="container mx-auto">
 				<div class="flex flex-col md:flex-row items-center">
 					<div class="md:w-1/2 mb-10 md:mb-0">
-						<h2 class="text-4xl font-bold mb-6">
+						<h2 class="md:text-4xl sm:text-xl font-bold mb-6">
 							Запишитесь на прием онлайн
 						</h2>
 						<p class="text-lg mb-8">
 							Оставьте заявку и наш администратор свяжется с вами для уточнения деталей
 						</p>
-						<div class="flex items-center">
+						<div class="flex items-center justify-center md:justify-start ">
 							<i class="pi pi-phone text-3xl mr-4" />
 							<div>
-								<p class="text-sm">
+								<p class="text-sm text-center md:text-start">
 									Или позвоните нам прямо сейчас
 								</p>
-								<p class="text-2xl font-bold">
+								<p class="md:text-2xl sm:text-xl font-bold">
 									+7 (123) 456-78-90
 								</p>
 							</div>
 						</div>
 					</div>
 					<div class="md:w-1/2 bg-white rounded-lg shadow-lg p-8 text-gray-800">
-						<h3 class="text-2xl font-bold mb-6">
+						<h3 class="md:text-2xl sm:text-xl font-bold mb-6">
 							Форма записи
 						</h3>
 
@@ -377,7 +377,7 @@
 							{{ errorMessage }}
 						</div>
 
-						<div class="grid grid-cols-1 gap-6">
+						<div class="grid grid-cols-1 gap-6 form">
 							<div>
 								<label
 									for="name"
@@ -940,5 +940,10 @@ const submitForm = async () => {
 
 .container {
   max-width: 1280px;
+}
+.form {
+  @media (min-width: 320px) {
+    min-width: 315px;
+  }
 }
 </style>
