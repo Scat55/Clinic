@@ -184,11 +184,11 @@ onBeforeMount(async () => {
 								header="Пациент"
 								style="width: 25%"
 							/>
-							<!-- <Column
-								field="doctor.name"
+							<Column
+								field="doctor"
 								header="Врач"
 								style="width: 25%"
-							/> -->
+							/>
 							<Column
 								field="service"
 								header="Услуга"
