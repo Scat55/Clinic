@@ -75,10 +75,6 @@ const chartOptions = ref({
 });
 
 function onStatusChange(client, id) {
-	// здесь client уже обновлен по v-model
-	// если хочешь, можешь вызвать метод стора для сохранения или обновления на сервере
-	console.log('Статус клиента изменён:', client.name, client.status);
-
 	// например, вызов обновления в сторе
 	clientStore.updateClientStatus(client, client.id);
 }
@@ -175,10 +171,20 @@ onBeforeMount(async () => {
 							striped-rows
 						>
 							<Column
-								field="date"
 								header="Время"
 								style="width: 20%"
-							/>
+							>
+								<template #body="{ data }">
+									{{ new Date(data.date).toLocaleString('ru-RU', {
+										day: '2-digit',
+										month: '2-digit',
+										year: 'numeric',
+										hour: '2-digit',
+										minute: '2-digit',
+										timeZone: 'Europe/Moscow',
+									}) }}
+								</template>
+							</Column>
 							<Column
 								field="name"
 								header="Пациент"

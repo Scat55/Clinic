@@ -47,6 +47,8 @@ export const useClientsStore = defineStore('client', () => {
 			clients.value = response.map(client => ({
 				...client,
 				status: client.status || 'Ожидание',
+				doctor: client.doctor || 'Не назначена',
+				service: client.service || 'Не назначена',
 			}));
 			loading.value = false;
 		}
