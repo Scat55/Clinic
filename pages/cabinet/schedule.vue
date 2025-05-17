@@ -1,33 +1,16 @@
 <template>
 	<div class="p-4">
 		<Toast />
-		<h1 class="text-2xl font-bold mb-6">
-			Расписание приёмов
-		</h1>
 
 		<!-- Фильтры и поиск -->
-		<div class="flex flex-wrap gap-4 mb-6">
-			<Dropdown
-				v-model="selectedDoctor"
-				:options="doctors"
-				option-label="name"
-				placeholder="Все врачи"
-				class="min-w-[200px]"
-			/>
-			<Calendar
-				v-model="selectedDate"
-				date-format="dd.mm.yy"
-				placeholder="Выберите дату"
-				class="min-w-[200px]"
-			/>
-			<InputText
-				v-model="searchQuery"
-				placeholder="Поиск пациента..."
-				class="min-w-[250px]"
-			/>
+		<div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+			<h1 class="text-2xl font-bold mb-6">
+				Расписание приёмов
+			</h1>
 			<Button
 				label="Добавить запись"
 				icon="pi pi-plus"
+				size="small"
 				@click="showAddDialog = true"
 			/>
 		</div>
