@@ -39,10 +39,10 @@
 			<!-- Таблица записей -->
 			<DataTable
 				v-else
-				:value="filteredAppointments"
+				:value="clients"
 				striped-rows
 				paginator
-				:rows="10"
+				:rows="5"
 				:rows-per-page-options="[5, 10, 25, 50]"
 				table-style="min-width: 100%"
 				class="bg-white rounded-lg shadow overflow-hidden"
@@ -88,27 +88,17 @@
 					</template>
 				</Column>
 				<Column
-					field="createdAt"
-					header="Дата записи"
-					sortable
-					style="width: 20%"
-				>
-					<template #body="{ data }">
-						{{ formatDateTime(data.createdAt) }}
-					</template>
-				</Column>
-				<Column
 					header="Действия"
 					style="width: 10%"
 				>
 					<template #body="{ data }">
 						<Button
-							icon="pi pi-trash"
+							icon="pi pi-folder-plus"
 							text
 							rounded
 							severity="danger"
-							aria-label="Удалить"
-							@click="confirmDelete(data)"
+							aria-label="В архив"
+							@click="confirmDelete()"
 						/>
 					</template>
 				</Column>
@@ -118,12 +108,12 @@
 		<!-- Диалог подтверждения удаления -->
 		<Dialog
 			v-model:visible="deleteDialogVisible"
-			header="Подтверждение удаления"
+			header="Перенести в архив"
 			:modal="true"
 			style="width: 400px"
 		>
 			<div class="mb-4">
-				Вы действительно хотите удалить запись пациента <strong>{{ appointmentToDelete?.name }}</strong>?
+				Вы действительно хотите перенести в архив запись пациента <strong>{{ appointmentToDelete?.name }}</strong>?
 			</div>
 			<template #footer>
 				<Button
@@ -133,7 +123,7 @@
 					@click="deleteDialogVisible = false"
 				/>
 				<Button
-					label="Удалить"
+					label="В архив"
 					icon="pi pi-check"
 					severity="danger"
 					@click="deleteAppointment"
@@ -143,59 +133,61 @@
 	</div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
 import { useConfirm } from 'primevue/useconfirm';
-
-const confirm = useConfirm();
+import { useClientsStore } from '~/stores/clients.js';
+import type Client from '@/types/clients.js';
 
 // Данные
-const appointments = ref([]);
+const appointments = ref<Client[]>([]);
 const searchQuery = ref('');
 const deleteDialogVisible = ref(false);
 const appointmentToDelete = ref(null);
 
+const clientStore = useClientsStore();
+const { clients } = storeToRefs(clientStore);
+
 // Загрузка записей из localStorage
 const loadAppointments = () => {
-	const storedData = localStorage.getItem('appointmentForms');
-	appointments.value = storedData ? JSON.parse(storedData) : [];
+	appointments.value = clients;
 };
 
 // Фильтрация записей
 const filteredAppointments = computed(() => {
-	if (!searchQuery.value) return appointments.value;
+	if (!clients.lenght) return 0;
 
 	const query = searchQuery.value.toLowerCase();
-	return appointments.value.filter(appointment =>
-		appointment.name.toLowerCase().includes(query)
-		|| appointment.phone.includes(query)
-		|| appointment.service.toLowerCase().includes(query),
+	return clients.value.filter(client =>
+		client.name.toLowerCase().includes(query)
+		|| client.phone.includes(query)
+		|| client.service.toLowerCase().includes(query),
 	);
 });
 
 // Форматирование даты и времени
 const formatDateTime = (dateString) => {
-	const options = {
-		day: 'numeric',
-		month: 'long',
+	return	new Date(dateString).toLocaleString('ru-RU', {
+		day: '2-digit',
+		month: '2-digit',
 		year: 'numeric',
 		hour: '2-digit',
 		minute: '2-digit',
-	};
-	return new Date(dateString).toLocaleDateString('ru-RU', options);
+		timeZone: 'Europe/Moscow',
+	});
 };
 
 // Подтверждение удаления
-const confirmDelete = (appointment) => {
-	appointmentToDelete.value = appointment;
+const confirmDelete = () => {
+	appointmentToDelete.value = clients.value;
 	deleteDialogVisible.value = true;
 };
 
-// Удаление записи
+// // Удаление записи
 const deleteAppointment = () => {
 	if (appointmentToDelete.value) {
-		const updatedAppointments = appointments.value.filter(
-			a => a.createdAt !== appointmentToDelete.value.createdAt,
+		const updatedAppointments = clients.value.filter(
+			a => a.createdAt !== appointmentToDelete.value,
 		);
 
 		localStorage.setItem('appointmentForms', JSON.stringify(updatedAppointments));
@@ -210,11 +202,7 @@ const deleteAppointment = () => {
 // Инициализация
 onMounted(() => {
 	loadAppointments();
-
-	// Слушаем изменения в localStorage
-	window.addEventListener('storage', () => {
-		loadAppointments();
-	});
+	clientStore.getAllClients();
 });
 </script>
 
