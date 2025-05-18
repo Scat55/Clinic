@@ -8,7 +8,7 @@
 						Список пациентов
 					</h1>
 					<p class="text-gray-600">
-						Всего записей: {{ filteredAppointments.length }}
+						Всего записей: {{ isArchivedClient.length }}
 					</p>
 				</div>
 
@@ -29,7 +29,7 @@
 
 			<!-- Уведомление если нет записей -->
 			<div
-				v-if="appointments.length === 0"
+				v-if="clients.length === 0"
 				class="bg-blue-50 border border-blue-200 text-blue-800 p-4 rounded-lg"
 			>
 				<i class="pi pi-info-circle mr-2" />
@@ -39,7 +39,7 @@
 			<!-- Таблица записей -->
 			<DataTable
 				v-else
-				:value="clients"
+				:value="isArchivedClient"
 				striped-rows
 				paginator
 				:rows="5"
@@ -98,7 +98,7 @@
 							rounded
 							severity="danger"
 							aria-label="В архив"
-							@click="confirmDelete()"
+							@click="confirmDelete(data)"
 						/>
 					</template>
 				</Column>
@@ -134,8 +134,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
-import { useConfirm } from 'primevue/useconfirm';
 import { useClientsStore } from '~/stores/clients.js';
 import type Client from '@/types/clients.js';
 
@@ -148,23 +146,12 @@ const appointmentToDelete = ref(null);
 const clientStore = useClientsStore();
 const { clients } = storeToRefs(clientStore);
 
+const isArchivedClient = computed(() => clients.value.filter(client => !client.isArchive));
+
 // Загрузка записей из localStorage
 const loadAppointments = () => {
 	appointments.value = clients;
 };
-
-// Фильтрация записей
-const filteredAppointments = computed(() => {
-	if (!clients.lenght) return 0;
-
-	const query = searchQuery.value.toLowerCase();
-	return clients.value.filter(client =>
-		client.name.toLowerCase().includes(query)
-		|| client.phone.includes(query)
-		|| client.service.toLowerCase().includes(query),
-	);
-});
-
 // Форматирование даты и времени
 const formatDateTime = (dateString) => {
 	return	new Date(dateString).toLocaleString('ru-RU', {
@@ -178,24 +165,17 @@ const formatDateTime = (dateString) => {
 };
 
 // Подтверждение удаления
-const confirmDelete = () => {
-	appointmentToDelete.value = clients.value;
+const confirmDelete = (client) => {
+	appointmentToDelete.value = client;
 	deleteDialogVisible.value = true;
 };
 
 // // Удаление записи
 const deleteAppointment = () => {
 	if (appointmentToDelete.value) {
-		const updatedAppointments = clients.value.filter(
-			a => a.createdAt !== appointmentToDelete.value,
-		);
-
-		localStorage.setItem('appointmentForms', JSON.stringify(updatedAppointments));
-		loadAppointments();
+		appointmentToDelete.value.isArchive = true;
+		clientStore.updateClientStatus(appointmentToDelete.value, appointmentToDelete.value.id);
 		deleteDialogVisible.value = false;
-
-		// Можно добавить уведомление об успешном удалении
-		console.log('Запись удалена:', appointmentToDelete.value);
 	}
 };
 
