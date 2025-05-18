@@ -74,8 +74,17 @@ const chartOptions = ref({
 	},
 });
 
-function onStatusChange(client, id) {
+async function onStatusChange(client, id) {
 	// например, вызов обновления в сторе
+
+	const text = 'Ваша запись в Клинику "Доверие" подтверждена!';
+	await $fetch('/api/sms', {
+		params: {
+			phone: client.phone,
+			text,
+			from: 'Клиника Доверие',
+		},
+	});
 	clientStore.updateClientStatus(client, client.id);
 }
 

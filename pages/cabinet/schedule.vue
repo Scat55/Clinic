@@ -122,10 +122,6 @@ const doctors = ref([
 ]);
 
 const appointments = ref([]);
-
-const selectedDoctor = ref(null);
-const selectedDate = ref(null);
-const searchQuery = ref('');
 const showAddDialog = ref(false);
 const showInfoDialog = ref(false);
 const selectedClient = ref(null);

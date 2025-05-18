@@ -850,50 +850,14 @@ const submitForm = async () => {
 
 	const date = new Date(formData.value.date);
 	date.setHours(date.getHours());
-
-	const formattedDate = format(date, 'd MMMM \'в\' HH:mm', { locale: ru });
-
 	try {
-		// await $fetch('https://bystrodmitry@gmail.com:xqWskvxVhlKXRQs40yE5T228FgGJrYFa@gate.smsaero.ru/v2/auth', {
-		// 	body: {
-		// 		number: formData.value.phone, // без +, но с 7 в начале
-		// 		sign: 'Клиника Доверие',
-		// 		text: `Приветствуем, ${formData.value.name}!
-		// 		 Ваша запись в Клинику "Доверие" подтверждена.
-		// 		 Вы записались на ${formData.value.service.title}
-		// 		 Ждём вас ${formattedDate}. Хорошего дня! 😊`,
-		// 	},
-		// });
-
-		// const email = 'bystrodmitry@gmail.com';
-		// const apiKey = 'xqWskvxVhlKXRQs40yE5T228FgGJrYFa';
-		// const auth = Buffer.from(`${email}:${apiKey}`).toString('base64');
-
-		// const response = await axios.get('https://gate.smsaero.ru/v2/sms/testsend', {
-		// 	params: {
-		// 		number: '79092233323', // без + и скобок
-		// 		text: 'Test text',
-		// 		sign: 'BIZNES',
-		// 	},
-		// 	headers: {
-		// 		Authorization: `Basic ${auth}`,
-		// 	},
-		// });
-		// const text = `Приветствуем, ${formData.value.name}!
-		// 		 Ваша запись в Клинику "Доверие" подтверждена.
-		//  		 Вы записались на ${formData.value.service.title}
-		//  		 Ждём вас ${formattedDate}. Хорошего дня! 😊`;
-
 		const clientsStore = useClientsStore();
 
 		const formValue = {
 			name: formData.value.name,
 			phone: formData.value.phone,
 			service: formData.value.service.title,
-			date: new Date(formData.value.date).toLocaleTimeString('ru-RU', {
-				hour: '2-digit',
-				minute: '2-digit',
-			}),
+			date: formData.value.date,
 		};
 
 		await clientsStore.createClient(formValue);
