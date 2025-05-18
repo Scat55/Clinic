@@ -1,3 +1,5 @@
+import type { QueryValue } from 'ufo';
+
 export default defineEventHandler(async (event) => {
 	const query = getQuery(event);
 	const { phone, text } = query;

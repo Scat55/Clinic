@@ -57,12 +57,12 @@ export const useClientsStore = defineStore('client', () => {
 		}
 	};
 
-	const updateClientStatus = async (client, id) => {
+	const updateClientStatus = async (client: Client, id: number | string) => {
 		loading.value = true;
 		error.value = null;
 
 		try {
-			const response = await $fetch<Client[]>(`${getApiBase()}/clients/${id}`, {
+			await $fetch<Client[]>(`${getApiBase()}/clients/${id}`, {
 				method: 'PUT',
 				body: client,
 			});
