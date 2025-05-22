@@ -8,7 +8,7 @@
 						Список пациентов
 					</h1>
 					<p class="text-gray-600">
-						Всего записей: {{ isArchivedClient.length }}
+						Всего записей: {{ filteredClients.length }}
 					</p>
 				</div>
 
@@ -39,7 +39,7 @@
 			<!-- Таблица записей -->
 			<DataTable
 				v-else
-				:value="isArchivedClient"
+				:value="filteredClients"
 				striped-rows
 				paginator
 				:rows="5"
@@ -152,6 +152,19 @@ const isArchivedClient = computed(() => clients.value.filter(client => !client.i
 const loadAppointments = () => {
 	appointments.value = clients;
 };
+
+const filteredClients = computed(() => {
+	const nonArchived = clients.value.filter(client => !client.isArchive);
+
+	if (!searchQuery.value) return nonArchived;
+
+	const query = searchQuery.value.toLowerCase();
+	return nonArchived.filter(client =>
+		client.name.toLowerCase().includes(query)
+		|| client.phone.toLowerCase().includes(query)
+		|| (client.service && client.service.toLowerCase().includes(query)),
+	);
+});
 // Форматирование даты и времени
 const formatDateTime = (dateString) => {
 	return	new Date(dateString).toLocaleString('ru-RU', {
